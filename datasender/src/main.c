@@ -1,9 +1,11 @@
 #include "comms.h"
 #include <libubox/blobmsg_json.h>
 #include <libubus.h>
+
 volatile sig_atomic_t deamonize = 1;
 IoTPDevice *dev = NULL;
 int rc = 0;
+
 void term_proc(int sigterm)
 {
   deamonize = 0;

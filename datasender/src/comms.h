@@ -6,7 +6,7 @@
 
 
 int setup_comms(IoTPDevice **device, IoTPConfig **config);
-void end_comms(IoTPDevice **device, IoTPConfig **config);
+int end_comms(IoTPDevice **device, IoTPConfig **config);
 int get_config_entry (char *path, char *buffer);
 
 #endif
