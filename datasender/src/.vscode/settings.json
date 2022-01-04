@@ -1,0 +1,6 @@
+{
+  "files.associations": {
+    "iotp_device.h": "c",
+    "stdbool.h": "c"
+  }
+}

@@ -1,0 +1,12 @@
+Index: libwattson-1.0.0/Makefile
+===================================================================
+--- libwattson-1.0.0.orig/Makefile
++++ libwattson-1.0.0/Makefile
+@@ -322,6 +322,8 @@ paho-mqtt-download:
+ 	fi
+ 
+ paho-mqtt-build:
++	echo "Editing paho.mqtt.c/Makefile ..."
++	sed -i '182d' ./paho.mqtt.c/Makefile
+ 	echo "Build paho mqtt c"
+ 	make -C paho.mqtt.c
