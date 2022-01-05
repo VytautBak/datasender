@@ -1,0 +1,12 @@
+[
+    {
+        "command": "gcc    -c -o comms.o comms.c",
+        "directory": "/home/studentas/Desktop/openwrt-gpl-ipq40xx-generic.Linux-x86_64/package/datasender/src",
+        "file": "/home/studentas/Desktop/openwrt-gpl-ipq40xx-generic.Linux-x86_64/package/datasender/src/comms.c"
+    },
+    {
+        "command": "gcc    -c -o main.o main.c",
+        "directory": "/home/studentas/Desktop/openwrt-gpl-ipq40xx-generic.Linux-x86_64/package/datasender/src",
+        "file": "/home/studentas/Desktop/openwrt-gpl-ipq40xx-generic.Linux-x86_64/package/datasender/src/main.c"
+    }
+]
