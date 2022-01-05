@@ -39,7 +39,7 @@ static const struct blobmsg_policy info_policy[__INFO_MAX] = {
     [MEMORY_DATA] = {.name = "memory", .type = BLOBMSG_TYPE_TABLE},
 };
 
-// cli argument availble options.
+
 static struct argp_option options[] = {
     {"orgId", 'o', "orgId", 0, "Your Organisation ID for IBM Cloud"},
     {"typeId", 't', "typeId", 0, "Your device's Type ID for IBM Cloud"},
@@ -49,7 +49,7 @@ static struct argp_option options[] = {
 
 };
 
-// define a struct to hold the arguments.
+
 struct arguments
 {
   char *orgId;
@@ -58,7 +58,7 @@ struct arguments
   char *token;
 };
 
-// define a function which will parse the args.
+
 static error_t parse_opt(int key, char *arg, struct argp_state *state)
 {
 
@@ -84,7 +84,7 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state)
   return 0;
 }
 
-// initialize the argp struct. Which will be used to parse and use the args.
+
 static struct argp argp = {options, parse_opt, "", ""};
 
 static void board_cb(struct ubus_request *req, int type, struct blob_attr *msg)
@@ -141,16 +141,16 @@ int argp_validate(struct arguments arguments)
 int main(int argc, char *argv[])
 {
 
-  // create a new struct to hold arguments.
+  /*Create struct to hold IBM cloud connection data */
   struct arguments arguments;
 
-  // set the default values for all of the opts.
+  /*Set default arguments*/
   arguments.typeId = "";
   arguments.deviceId = "";
   arguments.token = "";
   arguments.orgId = "";
 
-  // parse the cli arguments.
+  /*Parse arguments*/
   argp_parse(&argp, argc, argv, 0, 0, &arguments);
   if (argp_validate(arguments) == -1)
     return -1;
