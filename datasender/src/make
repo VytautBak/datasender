@@ -1,0 +1,17 @@
+[
+    {
+        "command": "gcc    -c -o comms.o comms.c",
+        "directory": "/home/studentas/Desktop/git/datasender/src",
+        "file": "/home/studentas/Desktop/git/datasender/src/comms.c"
+    },
+    {
+        "command": "gcc    -c -o info_getter.o info_getter.c",
+        "directory": "/home/studentas/Desktop/git/datasender/src",
+        "file": "/home/studentas/Desktop/git/datasender/src/info_getter.c"
+    },
+    {
+        "command": "gcc    -c -o main.o main.c",
+        "directory": "/home/studentas/Desktop/git/datasender/src",
+        "file": "/home/studentas/Desktop/git/datasender/src/main.c"
+    }
+]
