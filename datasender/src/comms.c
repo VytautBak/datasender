@@ -9,22 +9,19 @@ struct arguments
   char *token;
 };
 
-void logCallback(int level, char *message)
-{
+void logCallback(int level, char *message) {
     if (level > 0)
         fprintf(stdout, "%s\n", message ? message : "NULL");
     fflush(stdout);
 }
 
-void MQTTTraceCallback(int level, char *message)
-{
+void MQTTTraceCallback(int level, char *message) {
     if (level > 0)
         fprintf(stdout, "%s\n", message ? message : "NULL");
     fflush(stdout);
 }
 
-int setup_comms(IoTPDevice *device)
-{
+int setup_comms(IoTPDevice *device) {
     int rc = 0;
 
     /* Set IoTP Client log handler */
@@ -53,8 +50,7 @@ int setup_comms(IoTPDevice *device)
     }
 }
 
-int end_comms(IoTPDevice *device, IoTPConfig *config)
-{
+int end_comms(IoTPDevice *device, IoTPConfig *config) {
     int rc;
     bool failed = false;
     rc = IoTPDevice_disconnect(device);
@@ -91,8 +87,7 @@ static struct argp_option options[] = {
 };
 
 /* Function to parse options */
-static error_t parse_opt(int key, char *arg, struct argp_state *state)
-{
+static error_t parse_opt(int key, char *arg, struct argp_state *state) {
 
   struct arguments *arguments = state->input;
   switch (key)
@@ -118,8 +113,7 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state)
 
 static struct argp argp = {options, parse_opt, "", ""};
 
-int argp_validate(struct arguments arguments)
-{
+int argp_validate(struct arguments arguments) {
   if (strlen(arguments.orgId) == 0)
   {
     fprintf(stderr, "ERROR: Organisation ID not given.\n");

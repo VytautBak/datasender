@@ -1,8 +1,7 @@
 #include "info_getter.h"
 
 
-enum
-{
+enum {
   TOTAL_MEMORY,
   FREE_MEMORY,
   SHARED_MEMORY,
@@ -10,8 +9,7 @@ enum
   __MEMORY_MAX,
 };
 
-enum
-{
+enum {
   MEMORY_DATA,
   __INFO_MAX,
 };
@@ -27,8 +25,7 @@ static const struct blobmsg_policy info_policy[__INFO_MAX] = {
     [MEMORY_DATA] = {.name = "memory", .type = BLOBMSG_TYPE_TABLE},
 };
 
-void board_cb(struct ubus_request *req, int type, struct blob_attr *msg)
-{
+void board_cb(struct ubus_request *req, int type, struct blob_attr *msg) {
   int rc;
   uint64_t *ans = (uint64_t *)req->priv;
   struct blob_attr *tb[__INFO_MAX];
