@@ -1,93 +1,100 @@
-#include "comms.h"
-#include "info_getter.h"
+#include "wattson_config.h"
+#include "ubus_handler.h"
+#include "wattson.h"
+#include "file_locker.h"
+#include "sig_action_handler.h"
 
-volatile sig_atomic_t deamonize = 1;
-void term_proc(int sigterm)
+extern volatile sig_atomic_t deamonize;
+
+int main(int argc, char *argv[])
 {
-  deamonize = 0;
-}
+  /*Check if there is another instance of  the daemon running. If yes, exit */
+  if(is_only_instance() != 0) return -1;
 
-int main(int argc, char *argv[]) {
-  int rc;
   IoTPConfig *config = NULL;
   IoTPDevice *device = NULL;
+  int rc;
 
-  /*Create IOTPConfig*/
-  rc = IoTPConfig_create(&config, NULL);
-  if (rc != IOTPRC_SUCCESS) {
-    fprintf(stderr, "ERROR: Failed to create IOTPConfig\n");
-    end_comms(device, config);
-    return -1;
-  }
+ /*Initializes wattson objects and establishes connection to IBM Cloud*/
+  rc = init_wattson(&config, &device, argc, argv);
+  if(rc != 0) return rc;
 
-  /*Configure IOTPConfig*/
-  rc = config_comms(config, argc, argv);
-  if (rc != IOTPRC_SUCCESS) {
-    fprintf(stderr, "ERROR: Failed to configure comms\n");
-    end_comms(device, config);
-    return -1;
-  }
 
-  /*Create IOTPDevice*/
-  rc = IoTPDevice_create(&device, config);
-  if (rc != IOTPRC_SUCCESS) {
-    fprintf(stderr, "ERROR: Failed to create IOTPDevice\n");
-    end_comms(device, config);
-    return -1;
-  }
-
-  /* Setup other things for communication with IBM cloud */
-  rc = setup_comms(device);
-  if (rc != IOTPRC_SUCCESS) {
-    end_comms(device, config);
-    return -1;
-  }
-
-  /* Create sigaction handler */
-  struct sigaction action;
-  memset(&action, 0, sizeof(struct sigaction));
-  action.sa_handler = term_proc;
-  sigaction(SIGTERM, &action, NULL);
+  setup_sig_action();
 
   /* Setup connection to ubus */
   struct ubus_context *ctx = ubus_connect(NULL);
-  if (!ctx) {
+  if (!ctx)
+  {
     fprintf(stderr, "ERROR: Failed to connect to ubus\n");
-    end_comms(device, config);
+    wattson_end(device, config);
     ubus_free(ctx);
     return -1;
   }
 
   loop(ctx, device);
 
-  end_comms(device, config);
-  ubus_free(ctx);
 
+  wattson_end(device, config);
+  ubus_free(ctx);
+  unlock_file();
   return 0;
 }
 
 /* loop gets memory info from ubus to array mem and sends it to Watson IoT Platform. */
-void loop(struct ubus_context *ctx, struct IoTPDevice *device) {
+void loop(struct ubus_context *ctx, struct IoTPDevice *device)
+{
   uint32_t id;
-  uint64_t mem[4] = {0, 0, 0, 0};
-  int rc1, rc2;
+  struct memory memory;
+  int rc;
+  int fail_count = 0;
+  while (deamonize != 0)
+  {
 
-  while (deamonize != 0) {
-    if ((rc1 = ubus_lookup_id(ctx, "system", &id)) ||
-        (rc2 = ubus_invoke(ctx, id, "info", NULL, board_cb, mem, 3000))) {
-      if (rc1 == UBUS_STATUS_TIMEOUT || rc2 == UBUS_STATUS_TIMEOUT) {
-        fprintf(stderr, "WARN: Cannot request memory info from procd as ubus has timed out. Reconnecting...\n");
+    if(fail_count > 10) {
+      fprintf(stderr, "ERROR: Failed to publish info 10 times in a row. Exiting.");
+      return;
+    }
+
+    clear_memory(&memory);
+
+    rc = ubus_lookup_id(ctx, "system", &id);
+    if (rc == 0)
+    {
+     rc = ubus_invoke(ctx, id, "info", NULL, board_cb, &memory, 3000);
+      if (rc == 0)
+      {
+        if(wattson_send_message(device, memory) == 0) fail_count = 0;
+        clear_memory(&memory);
+        sleep(5);
+      }
+      else
+      {
+        fprintf(stderr, "ERROR: Failed to get memory info from procd\n");
+        if (rc == UBUS_STATUS_TIMEOUT)
+        {
+          ctx = ubus_connect(NULL);
+          if (!ctx)
+          {
+            fprintf(stdout, "ERROR: Could not reconnect to ubus. Exiting.\n");
+          }
+        }
+        fail_count++;
+      }
+    }
+    else
+    {
+      fail_count++;
+      fprintf(stderr, "ERROR: Failed to lookup procd id on ubus.\n");
+      if (rc == UBUS_STATUS_TIMEOUT)
+      {
+        fprintf(stdout, "WARN: ubus has timed out. Attempting to reconnect...\n");
         ctx = ubus_connect(NULL);
         if (!ctx)
         {
           fprintf(stdout, "ERROR: Could not reconnect to ubus. Exiting.\n");
-          return;
         }
       }
     }
-
-    comms_send_message(device, mem);
-    memset(mem, 0, sizeof(int) * 4);
-    sleep(5);
   }
 }

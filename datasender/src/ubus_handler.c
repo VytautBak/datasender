@@ -1,4 +1,4 @@
-#include "info_getter.h"
+#include "ubus_handler.h"
 
 
 enum {
@@ -27,7 +27,7 @@ static const struct blobmsg_policy info_policy[__INFO_MAX] = {
 
 void board_cb(struct ubus_request *req, int type, struct blob_attr *msg) {
   int rc;
-  uint64_t *ans = (uint64_t *)req->priv;
+  struct memory *ans = (struct memory*)req->priv;
   struct blob_attr *tb[__INFO_MAX];
   struct blob_attr *memory[__MEMORY_MAX];
 
@@ -46,9 +46,16 @@ void board_cb(struct ubus_request *req, int type, struct blob_attr *msg) {
   {
     return;
   }
-  ans[0] = blobmsg_get_u64(memory[TOTAL_MEMORY]);
-  ans[1] = blobmsg_get_u64(memory[FREE_MEMORY]);
-  ans[2] = blobmsg_get_u64(memory[SHARED_MEMORY]);
-  ans[3] = blobmsg_get_u64(memory[BUFFERED_MEMORY]);
+  ans->total = blobmsg_get_u64(memory[TOTAL_MEMORY]);
+  ans->free = blobmsg_get_u64(memory[FREE_MEMORY]);
+  ans->shared = blobmsg_get_u64(memory[SHARED_MEMORY]);
+  ans->buffered = blobmsg_get_u64(memory[BUFFERED_MEMORY]);
+}
+
+void clear_memory(struct memory *memory) {
+  memset(&memory->total, 0, sizeof(uint64_t));
+  memset(&memory->shared, 0, sizeof(uint64_t));
+  memset(&memory->buffered, 0, sizeof(uint64_t));
+  memset(&memory->free, 0, sizeof(uint64_t));
 }
 
