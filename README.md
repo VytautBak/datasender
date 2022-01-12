@@ -1,3 +1,7 @@
+NOTE: Currently this program does NOT correctly fail if there is no internet connection. This is due to IBM's lib not returning correct codes.
+
+
+
 Pirmoji užduotis: RUTX gaminio prijungimas prie IBM Watson debesies
 Su šia užduotimi yra siekiama įtvirtinti pirmasias įgytas teorinias ir praktinias žinias kaip OpenWRT sistemoje yra kuriami paketai, bei išmokti pritaikyti trečiosios šalies teikiamą programinę įrangą.
 
