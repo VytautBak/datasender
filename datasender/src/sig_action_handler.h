@@ -1,6 +1,6 @@
 
-#include <stddef.h>
 #include <signal.h>
+#include <stddef.h>
 
 #ifndef SIG_ACTION_HANDLER_H
 #define SIG_ACTION_HANDLER_H

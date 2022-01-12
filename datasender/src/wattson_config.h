@@ -1,7 +1,8 @@
-#include "iotp_device.h"
-#include <stdbool.h>
 #include <argp.h>
+#include <stdbool.h>
 #include <string.h>
+
+#include "iotp_device.h"
 #ifndef WATTSON_CONFIG_H
 #define WATTSON_CONFIG_H
 
