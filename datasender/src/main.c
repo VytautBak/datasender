@@ -10,11 +10,11 @@ int main(int argc, char *argv[]) {
     /*Check if there is another instance of  the daemon running. If yes, exit */
     if (is_only_instance() != 0) return -1;
 
-    IoTPConfig *config = NULL;
-    IoTPDevice *device = NULL;
     int rc;
 
-    /*Initializes wattson objects and establishes connection to IBM Cloud*/
+    /*Creates and initializes wattson objects, establishes connection to IBM Cloud*/
+    IoTPConfig *config = NULL;
+    IoTPDevice *device = NULL;
     rc = init_wattson(&config, &device, argc, argv);
     if (rc != 0) return rc;
 
