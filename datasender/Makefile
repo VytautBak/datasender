@@ -20,9 +20,11 @@ define Package/datasender/install
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_DIR) $(1)/etc/config
 	$(INSTALL_DIR) $(1)/etc/init.d
+	$(INSTALL_DIR) $(1)/etc/rc.d
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/datasender $(1)/usr/bin
 	$(INSTALL_BIN) ./files/datasender.init $(1)/etc/init.d/datasender
 	$(INSTALL_CONF) ./files/datasender.config $(1)/etc/config/datasender
+	ln -s /etc/init.d/datasender $(1)/etc/rc.d/S99datasender
 endef
 
 $(eval $(call BuildPackage,datasender))

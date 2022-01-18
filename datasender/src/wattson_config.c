@@ -82,7 +82,7 @@ int wattson_config(struct IoTPConfig *config, int argc, char *argv[])
                 return -1;
 
         /* Input config into Wattson IoT config struct */
-        //  IoTPConfig_setProperty(config, "options.logLevel", "error");
+        IoTPConfig_setProperty(config, "options.logLevel", "error");
         IoTPConfig_setProperty(config, "identity.orgId", arguments.orgId);
         IoTPConfig_setProperty(config, "identity.typeId", arguments.typeId);
         IoTPConfig_setProperty(config, "identity.deviceId", arguments.deviceId);

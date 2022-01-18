@@ -10,7 +10,7 @@ int init_wattson(IoTPConfig **config, IoTPDevice **device, int argc, char argv[]
         if (rc != IOTPRC_SUCCESS) {
                 fprintf(stderr, "ERROR: Failed to create IOTPConfig\n");
                 wattson_end(*device, *config);
-                return -1;
+                return rc;
         }
 
         /*Configure IOTPConfig*/
@@ -18,7 +18,7 @@ int init_wattson(IoTPConfig **config, IoTPDevice **device, int argc, char argv[]
         if (rc != IOTPRC_SUCCESS) {
                 fprintf(stderr, "ERROR: Failed to configure comms\n");
                 wattson_end(*device, *config);
-                return -1;
+                return rc;
         }
 
         /*Create IOTPDevice*/
@@ -26,7 +26,7 @@ int init_wattson(IoTPConfig **config, IoTPDevice **device, int argc, char argv[]
         if (rc != IOTPRC_SUCCESS) {
                 fprintf(stderr, "ERROR: Failed to create IOTPDevice. Check configuration!\n");
                 wattson_end(*device, *config);
-                return -1;
+                return rc;
         }
 
         /* Connect to IBM Cloud */
@@ -36,6 +36,8 @@ int init_wattson(IoTPConfig **config, IoTPDevice **device, int argc, char argv[]
                 fprintf(stderr, "ERROR: Returned error reason: %s\n", IOTPRC_toString(rc));
                 return rc;
         }
+        fprintf(stdout, "INFO: Succesfully connected to IBM cloud!\n");
+        return 0;
 }
 
 int wattson_end(IoTPDevice *device, IoTPConfig *config)
